@@ -13,6 +13,7 @@
 #include <camkes.h>
 #include <camkes/init.h>
 
+__attribute__((no_instrument_function))
 int component_control_main() {
     int error;
 

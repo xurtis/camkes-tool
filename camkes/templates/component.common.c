@@ -273,6 +273,7 @@ extern size_t morecore_size;
  * init so that there is a way for other applications to decide whether
  * they want to provide their syscall implementation before or after
  * the camkes ones */
+__attribute__((no_instrument_function))
 static void CONSTRUCTOR(CAMKES_SYSCALL_CONSTRUCTOR_PRIORITY) init_install_syscalls(void) {
     camkes_install_syscalls();
 }
@@ -280,6 +281,7 @@ static void CONSTRUCTOR(CAMKES_SYSCALL_CONSTRUCTOR_PRIORITY) init_install_syscal
 /* General CAmkES platform initialisation. Expects to be run in a
  * single-threaded, exclusive context. On failure it does not return.
  */
+__attribute__((no_instrument_function))
 static void CONSTRUCTOR(CAMKES_SYSCALL_CONSTRUCTOR_PRIORITY+1) init(void) {
 #ifdef CONFIG_CAMKES_DEFAULT_HEAP_SIZE
     /* Assign the heap */
@@ -518,6 +520,7 @@ const char * get_thread_name(int thread_id) {
 }
 
 static int post_main(int thread_id);
+__attribute__((no_instrument_function))
 void USED NORETURN _camkes_start_c(int thread_id) {
     /*- set tcb_control = alloc("%s_tcb" % threads[0].name, seL4_TCBObject) -*/
     if (thread_id != /*? tcb_control ?*/) {
@@ -535,6 +538,7 @@ static void *tls_regions[/*? len(threads) - 1 ?*/];
 // static tls regions
 static char static_tls_regions[/*? len(threads) - 1 ?*/][CONFIG_SEL4RUNTIME_STATIC_TLS];
 
+__attribute__((no_instrument_function))
 void camkes_tls_init(int thread_id) {
     switch (thread_id) {
         /*- for index, t in enumerate(threads) -*/
@@ -679,6 +683,7 @@ static volatile int UNUSED interface_init_lock = 0;
 /*- set post_init_ep = alloc('post_init_ep', seL4_EndpointObject, read=True, write=True) -*/
 static volatile int UNUSED post_init_lock = 0;
 
+__attribute__((no_instrument_function))
 int pre_init_interface_sync() {
     int result UNUSED;
 
@@ -733,6 +738,7 @@ int pre_init_interface_sync() {
     return 0;
 }
 
+__attribute__((no_instrument_function))
 int post_init_interface_sync() {
     int result UNUSED;
 
@@ -784,6 +790,7 @@ int post_init_interface_sync() {
     return 0;
 }
 
+__attribute__((no_instrument_function))
 static int post_main(int thread_id) {
     int ret = 0;
     switch (thread_id) {
@@ -870,6 +877,7 @@ static int post_main(int thread_id) {
     }
 }
 
+__attribute__((no_instrument_function))
 int USED main(int argc UNUSED, char *argv[]) {
     assert(argc == 2);
     assert(strcmp(argv[0], "camkes") == 0);
